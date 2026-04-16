@@ -20,17 +20,20 @@ def format_scan_text(report: ScanReport) -> str:
 
     for app in report.app_results:
         lines.append(f"==> {app.app_name} ({app.status})")
+        if app.description:
+            lines.append(f"Description: {app.description}")
 
         for path_result in app.path_results:
-            if path_result.status == "found":
-                lines.append(
-                    f"[FOUND] {path_result.path} -> {format_bytes(path_result.size_bytes)}"
-                )
-            else:
-                lines.append(f"[MISS ] {path_result.path}")
+            prefix = "[FOUND]" if path_result.status == "found" else "[MISS ]"
+            lines.append(
+                f"{prefix} {path_result.path} | category={path_result.category} | {format_bytes(path_result.size_bytes)}"
+            )
+
+            if path_result.description:
+                lines.append(f"        desc: {path_result.description}")
 
             for note in path_result.notes:
-                lines.append(f"[INFO ] {note}")
+                lines.append(f"        note: {note}")
 
         for note in app.notes:
             lines.append(f"[INFO ] {note}")

@@ -1,0 +1,40 @@
+{
+  "apps": [
+    {
+      "id": "slack",
+      "name": "Slack",
+      "platforms": ["macos"],
+      "description": "Slack desktop app storage on macOS.",
+      "paths": [
+        {
+          "path": "~/Library/Application Support/Slack/Cache",
+          "category": "cache",
+          "description": "Electron cache files."
+        },
+        {
+          "path": "~/Library/Logs/Slack",
+          "category": "logs",
+          "description": "Slack application logs."
+        }
+      ]
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "platforms": ["macos"],
+      "description": "Notion desktop app storage on macOS.",
+      "paths": [
+        {
+          "path": "~/Library/Application Support/Notion/Cache",
+          "category": "cache",
+          "description": "Notion runtime cache."
+        },
+        {
+          "path": "~/Library/Caches/notion.id",
+          "category": "cache",
+          "description": "Updater or app cache files."
+        }
+      ]
+    }
+  ]
+}
