@@ -5,16 +5,27 @@
       "name": "Slack",
       "platforms": ["macos"],
       "description": "Slack desktop app storage on macOS.",
+      "user_access_paths": [
+        "~/Library/Application Support/Slack",
+        "~/Library/Logs/Slack"
+      ],
+      "warnings": [
+        "Do not delete app data blindly unless you know which category is safe."
+      ],
       "paths": [
         {
           "path": "~/Library/Application Support/Slack/Cache",
           "category": "cache",
-          "description": "Electron cache files."
+          "description": "Electron cache files.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "safe_to_clean_hint": "Usually disposable cache, but verify Slack is closed before cleanup."
         },
         {
           "path": "~/Library/Logs/Slack",
           "category": "logs",
-          "description": "Slack application logs."
+          "description": "Slack application logs.",
+          "accessible_path": "~/Library/Logs/Slack",
+          "safe_to_clean_hint": "Logs are often safe to remove if you do not need diagnostics."
         }
       ]
     },
@@ -27,7 +38,8 @@
         {
           "path": "~/Library/Application Support/Notion/Cache",
           "category": "cache",
-          "description": "Notion runtime cache."
+          "description": "Notion runtime cache.",
+          "safe_to_clean_hint": "Cache is often rebuildable after restart."
         },
         {
           "path": "~/Library/Caches/notion.id",
