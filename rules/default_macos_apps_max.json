@@ -1,0 +1,354 @@
+{
+  "apps": [
+    {
+      "id": "slack",
+      "name": "Slack",
+      "platforms": ["macos"],
+      "description": "Slack desktop storage on macOS, mainly Electron cache, logs, and local browser-style state.",
+      "user_access_paths": [
+        "~/Library/Application Support/Slack",
+        "~/Library/Logs/Slack"
+      ],
+      "warnings": [
+        "Do not delete IndexedDB, Local Storage, or other database-like folders unless you are intentionally resetting local app state.",
+        "Close Slack before manually touching cache or log folders."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Application Support/Slack/Cache",
+          "category": "cache",
+          "description": "Electron HTTP and runtime cache.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "safe_to_clean_hint": "Usually lower risk than database or session folders.",
+          "warning": "Review the exact folder and close Slack first."
+        },
+        {
+          "path": "~/Library/Application Support/Slack/Code Cache",
+          "category": "cache",
+          "description": "Generated code cache used by Electron.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "safe_to_clean_hint": "Often rebuildable after app restart."
+        },
+        {
+          "path": "~/Library/Application Support/Slack/GPUCache",
+          "category": "cache",
+          "description": "GPU-related rendering cache.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "safe_to_clean_hint": "Usually disposable runtime cache."
+        },
+        {
+          "path": "~/Library/Application Support/Slack/Service Worker/CacheStorage",
+          "category": "cache",
+          "description": "Service worker cache storage.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "safe_to_clean_hint": "Lower risk than IndexedDB or Local Storage.",
+          "warning": "Do not generalize this hint to the whole Service Worker folder."
+        },
+        {
+          "path": "~/Library/Logs/Slack",
+          "category": "logs",
+          "description": "Slack logs and diagnostics.",
+          "accessible_path": "~/Library/Logs/Slack",
+          "safe_to_clean_hint": "Logs are usually safer to review and prune than live app state."
+        },
+        {
+          "path": "~/Library/Application Support/Slack/IndexedDB",
+          "category": "databases",
+          "description": "Browser-style local databases for app state and offline data.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "warning": "High risk for workspace state and cached content. Do not delete by default."
+        },
+        {
+          "path": "~/Library/Application Support/Slack/Local Storage",
+          "category": "local-state",
+          "description": "Local storage for session and app state.",
+          "accessible_path": "~/Library/Application Support/Slack",
+          "warning": "May contain session, account, or preference state."
+        }
+      ]
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "platforms": ["macos"],
+      "description": "Notion desktop storage on macOS, including cache and local app data.",
+      "user_access_paths": [
+        "~/Library/Application Support/Notion",
+        "~/Library/Caches/notion.id",
+        "~/Library/Caches/notion.id.ShipIt"
+      ],
+      "warnings": [
+        "The full Application Support/Notion folder can include local app data, not only disposable cache.",
+        "Close Notion before manually cleaning cache-like directories."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Application Support/Notion/Cache",
+          "category": "cache",
+          "description": "Primary runtime cache.",
+          "accessible_path": "~/Library/Application Support/Notion",
+          "safe_to_clean_hint": "Often rebuildable after restart."
+        },
+        {
+          "path": "~/Library/Application Support/Notion/Code Cache",
+          "category": "cache",
+          "description": "Generated code cache.",
+          "accessible_path": "~/Library/Application Support/Notion",
+          "safe_to_clean_hint": "Usually lower risk than databases or app state."
+        },
+        {
+          "path": "~/Library/Application Support/Notion/GPUCache",
+          "category": "cache",
+          "description": "GPU rendering cache.",
+          "accessible_path": "~/Library/Application Support/Notion",
+          "safe_to_clean_hint": "Usually disposable runtime cache."
+        },
+        {
+          "path": "~/Library/Application Support/Notion/IndexedDB",
+          "category": "databases",
+          "description": "Local database files used by the app.",
+          "accessible_path": "~/Library/Application Support/Notion",
+          "warning": "May contain offline workspace state. Do not delete by default."
+        },
+        {
+          "path": "~/Library/Caches/notion.id",
+          "category": "cache",
+          "description": "App or updater cache files under the macOS Caches directory.",
+          "accessible_path": "~/Library/Caches/notion.id",
+          "safe_to_clean_hint": "Cache folder is a lower-risk review candidate than Application Support."
+        },
+        {
+          "path": "~/Library/Caches/notion.id.ShipIt",
+          "category": "logs",
+          "description": "ShipIt updater state and logs.",
+          "accessible_path": "~/Library/Caches/notion.id.ShipIt",
+          "safe_to_clean_hint": "Mostly useful for update diagnostics rather than daily use.",
+          "warning": "Keep it if you are troubleshooting update problems."
+        }
+      ]
+    },
+    {
+      "id": "wechat",
+      "name": "WeChat",
+      "platforms": ["macos"],
+      "description": "WeChat media/cache usage across account directories on macOS. Supports both classic container layout and newer xwechat_files layout.",
+      "user_access_paths": [
+        "~/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat",
+        "~/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files"
+      ],
+      "warnings": [
+        "This rule focuses on media/cache-like directories under each account root, not the full message database.",
+        "Check Favorites and transferred files before deleting anything manually."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat",
+          "category": "media",
+          "description": "Classic WeChat macOS account roots. Scans per-account Cache, predownload, mmxpt, Files, Video, Favorites and related temp/media directories.",
+          "accessible_path": "~/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat",
+          "safe_to_clean_hint": "Cache, predownload and mmxpt are usually safer to clean than Files, Video or Favorites.",
+          "warning": "Do not assume all media is disposable. Files, Favorites and message-related directories may contain important content.",
+          "mode": "wechat_accounts_media"
+        },
+        {
+          "path": "~/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files",
+          "category": "media",
+          "description": "Newer WeChat macOS storage root. Scans per-account msg/attach, msg/file and msg/video plus common cache-like directories when present.",
+          "accessible_path": "~/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files",
+          "safe_to_clean_hint": "Review large files under msg/attach, msg/file and msg/video before deleting; they may be downloaded chat media.",
+          "warning": "This root may contain valuable downloaded files and media. Back up important content first.",
+          "mode": "wechat_accounts_media"
+        }
+      ]
+    },
+    {
+      "id": "feishu",
+      "name": "Feishu",
+      "platforms": ["macos"],
+      "description": "Feishu local shell storage on macOS. Publicly documented paths are less granular than some other apps, so this rule stays conservative.",
+      "user_access_paths": [
+        "~/Library/Application Support/LarkShell",
+        "~/Library/Application Support/LarkShell/sdk_storage"
+      ],
+      "warnings": [
+        "The LarkShell data directory can mix cache, logs, and live local state.",
+        "Prefer reviewing the log folder first; avoid deleting the whole LarkShell tree unless you are intentionally resetting Feishu."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Application Support/LarkShell/sdk_storage/log",
+          "category": "logs",
+          "description": "Feishu diagnostic logs under sdk_storage.",
+          "accessible_path": "~/Library/Application Support/LarkShell/sdk_storage",
+          "safe_to_clean_hint": "Logs are usually safer to review and prune than the full data directory."
+        },
+        {
+          "path": "~/Library/Application Support/LarkShell/sdk_storage",
+          "category": "local-data",
+          "description": "Main Feishu local storage directory documented in reset guides.",
+          "accessible_path": "~/Library/Application Support/LarkShell",
+          "warning": "This may include active local state, downloaded content, and cache. Do not delete by default."
+        }
+      ]
+    },
+    {
+      "id": "lightroom-classic",
+      "name": "Adobe Lightroom Classic",
+      "platforms": ["macos"],
+      "description": "Default Lightroom Classic locations on macOS. Adobe notes that some of these paths can be customized, so the rule focuses on standard defaults.",
+      "user_access_paths": [
+        "~/Pictures/Lightroom",
+        "~/Library/Application Support/Adobe/Lightroom",
+        "~/Library/Application Support/Adobe/CameraRaw"
+      ],
+      "warnings": [
+        "Catalog and catalog-adjacent files can be critical. Do not delete .lrcat, .lock, or .lrcat-journal files casually.",
+        "Preview caches are usually safer to rebuild than catalogs, presets, or backups."
+      ],
+      "paths": [
+        {
+          "path": "~/Pictures/Lightroom/Lightroom Catalog Previews.lrdata",
+          "category": "preview-cache",
+          "description": "Default preview cache next to the catalog.",
+          "accessible_path": "~/Pictures/Lightroom",
+          "safe_to_clean_hint": "Adobe community guidance says preview caches can be rebuilt automatically."
+        },
+        {
+          "path": "~/Pictures/Lightroom/Lightroom Catalog Smart Previews.lrdata",
+          "category": "preview-cache",
+          "description": "Default smart preview cache next to the catalog.",
+          "accessible_path": "~/Pictures/Lightroom",
+          "warning": "Smaller than normal previews but still related to editing workflow. Review before deleting."
+        },
+        {
+          "path": "~/Pictures/Lightroom/Backups",
+          "category": "backups",
+          "description": "Default Lightroom Classic catalog backups.",
+          "accessible_path": "~/Pictures/Lightroom/Backups",
+          "safe_to_clean_hint": "Review old dated backups manually; keep the recent ones you still need."
+        },
+        {
+          "path": "~/Library/Application Support/Adobe/Lightroom",
+          "category": "application-support",
+          "description": "Presets, templates, and support data.",
+          "accessible_path": "~/Library/Application Support/Adobe/Lightroom",
+          "warning": "May contain presets and other user configuration, not just disposable cache."
+        },
+        {
+          "path": "~/Library/Application Support/Adobe/CameraRaw/Settings",
+          "category": "settings",
+          "description": "Camera Raw settings and converted preset data.",
+          "accessible_path": "~/Library/Application Support/Adobe/CameraRaw/Settings",
+          "warning": "Settings and presets are user data, not cleanup-first targets."
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "name": "Microsoft Teams",
+      "platforms": ["macos"],
+      "description": "Microsoft Teams storage on macOS, covering both classic and newer container-based app layouts.",
+      "user_access_paths": [
+        "~/Library/Application Support/Microsoft/Teams",
+        "~/Library/Caches/com.microsoft.teams",
+        "~/Library/Containers/com.microsoft.teams2",
+        "~/Library/Group Containers/UBF8T346G9.com.microsoft.teams"
+      ],
+      "warnings": [
+        "Teams cache paths differ between classic and new Teams.",
+        "Support log archives are usually created in Downloads, but this rule does not scan ~/Downloads because it is global user storage rather than app-owned storage."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Application Support/Microsoft/Teams",
+          "category": "classic-local-data",
+          "description": "Classic Teams local data and browser-style cache location.",
+          "accessible_path": "~/Library/Application Support/Microsoft/Teams",
+          "warning": "Classic Teams path can mix cache, logs, and active local state."
+        },
+        {
+          "path": "~/Library/Caches/com.microsoft.teams",
+          "category": "classic-cache",
+          "description": "Classic Teams cache directory.",
+          "accessible_path": "~/Library/Caches/com.microsoft.teams",
+          "safe_to_clean_hint": "Usually a lower-risk review target than the full Application Support tree."
+        },
+        {
+          "path": "~/Library/Containers/com.microsoft.teams2",
+          "category": "new-teams-local-data",
+          "description": "New Teams container on macOS.",
+          "accessible_path": "~/Library/Containers/com.microsoft.teams2",
+          "warning": "New Teams stores active local state here; do not delete by default."
+        },
+        {
+          "path": "~/Library/Group Containers/UBF8T346G9.com.microsoft.teams",
+          "category": "new-teams-shared-data",
+          "description": "New Teams group container storage.",
+          "accessible_path": "~/Library/Group Containers/UBF8T346G9.com.microsoft.teams",
+          "warning": "Shared container may include cached files and live app state."
+        }
+      ]
+    },
+    {
+      "id": "baidunetdisk",
+      "name": "BaiduNetdisk",
+      "platforms": ["macos"],
+      "description": "BaiduNetdisk storage on macOS. Public sources consistently mention caches, preferences, and support files, but publicly documented path detail is weaker than for Slack or Notion.",
+      "user_access_paths": [
+        "~/Library/Caches/com.baidu.BaiduNetdisk",
+        "~/Library/Application Support/BaiduNetdisk"
+      ],
+      "warnings": [
+        "Downloaded files may live in a user-chosen sync or download folder outside the app-owned Library paths and are not covered by default.",
+        "Treat Application Support data as higher risk than pure cache."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Caches/com.baidu.BaiduNetdisk",
+          "category": "cache",
+          "description": "BaiduNetdisk cache directory commonly referenced in macOS cleanup guides.",
+          "accessible_path": "~/Library/Caches/com.baidu.BaiduNetdisk",
+          "safe_to_clean_hint": "Cache folder is the lower-risk place to review first."
+        },
+        {
+          "path": "~/Library/Application Support/BaiduNetdisk",
+          "category": "application-support",
+          "description": "BaiduNetdisk support files and local app data.",
+          "accessible_path": "~/Library/Application Support/BaiduNetdisk",
+          "warning": "May include sync state or downloaded metadata; do not delete by default."
+        },
+        {
+          "path": "~/Library/Logs/BaiduNetdisk",
+          "category": "logs",
+          "description": "Possible BaiduNetdisk log folder.",
+          "accessible_path": "~/Library/Logs/BaiduNetdisk",
+          "safe_to_clean_hint": "Logs are usually safer to review than live app state."
+        }
+      ]
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram",
+      "platforms": ["macos"],
+      "description": "Telegram for macOS local storage, with the main footprint typically under its group container.",
+      "user_access_paths": [
+        "~/Library/Group Containers/6N38VWS5BX.ru.keepcoder.Telegram"
+      ],
+      "warnings": [
+        "This rule measures only stable/*/postbox/media. It does not count Telegram databases or other container data.",
+        "Deleting postbox/media can force media to re-download later."
+      ],
+      "paths": [
+        {
+          "path": "~/Library/Group Containers/6N38VWS5BX.ru.keepcoder.Telegram/stable",
+          "category": "media",
+          "description": "Scan each Telegram account under stable and sum only postbox/media.",
+          "accessible_path": "~/Library/Group Containers/6N38VWS5BX.ru.keepcoder.Telegram/stable",
+          "safe_to_clean_hint": "If you manually clear postbox/media, close Telegram first. Expect media to re-download when opened again.",
+          "warning": "Do not delete postbox/db or the whole stable account directory.",
+          "mode": "telegram_accounts_media"
+        }
+      ]
+    }
+  ]
+}

@@ -87,7 +87,8 @@ def _parse_app_rule(data: dict) -> AppRule:
     platforms = data.get("platforms")
     if not isinstance(platforms, list) or not platforms:
         raise ValueError("platforms must be a non-empty string list")
-    description = data.get("description", "").strip()
+    # description = data.get("description", "").strip()
+    description = str(data.get("description", "")).strip()
     user_access_paths = data.get("user_access_paths", [])
     warnings = data.get("warnings", [])
     path_rules_data = data.get("paths", [])
@@ -105,6 +106,7 @@ def _parse_app_rule(data: dict) -> AppRule:
                 accessible_path=_optional_string(path_data, "accessible_path"),
                 safe_to_clean_hint=_optional_string(path_data, "safe_to_clean_hint"),
                 warning=_optional_string(path_data, "warning"),
+                mode=_optional_string(path_data,"mode")
             )
         )
 

@@ -2,9 +2,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from scanner.filesystem import measure_path_size
-from scanner.models import AppRule, AppScanResult, PathScanResult, ScanReport
+from scanner.filesystem import (
+    measure_path_size,
+    measure_telegram_accounts_media,
+    measure_wechat_accounts_media,
+)
+from scanner.models import AppRule, AppScanResult, PathScanResult, ScanReport, PathRule
 from scanner.utils import expand_user_path, unique_preserve_order
+
+
+TELEGRAM_ACCOUNTS_MEDIA_MODE = "telegram_accounts_media"
+WECHAT_ACCOUNTS_MEDIA_MODE = "wechat_accounts_media"
 
 
 def _selection_matches(value: str, rules: list[AppRule]) -> bool:
@@ -68,7 +76,7 @@ def _scan_app(rule: AppRule, platform_name: str, verbose: bool) -> AppScanResult
     return result
 
 
-def _scan_path(path_rule, verbose: bool) -> PathScanResult:
+def _scan_path(path_rule: PathRule, verbose: bool) -> PathScanResult:
     expanded_path = expand_user_path(path_rule.path)
     path_obj = Path(expanded_path)
     result = PathScanResult(
@@ -86,6 +94,38 @@ def _scan_path(path_rule, verbose: bool) -> PathScanResult:
         result.notes.append("Path does not exist.")
         return result
     try:
+        # Add special Telegram mode
+        if path_rule.mode == TELEGRAM_ACCOUNTS_MEDIA_MODE:
+            tg_media_size_bytes, notes, tg_matched_dirs = (
+                measure_telegram_accounts_media(expanded_path)
+            )
+            if verbose:
+                result.notes.extend(notes)
+            if tg_matched_dirs == 0:
+                result.notes.append("No Telegram account media directories found.")
+                return result
+            result.size_bytes += tg_media_size_bytes
+            result.status = "found"
+            result.notes.append(
+                f"Matched {tg_matched_dirs} Telegram account media directories."
+            )
+            return result
+        # Add special Wechat mode
+        if path_rule.mode == WECHAT_ACCOUNTS_MEDIA_MODE:
+            wx_media_size_bytes, notes, wx_matched_dirs = (
+                measure_wechat_accounts_media(expanded_path)
+            )
+            if verbose:
+                result.notes.extend(notes)
+            if wx_matched_dirs == 0 :
+                result.notes.append("No Wechat account directories found.")
+                return result
+            result.size_bytes += wx_media_size_bytes
+            result.status = "found"
+            result.notes.append(
+                f"Matched {wx_matched_dirs} Wechat account directories."
+            )
+            return result
         size_bytes, notes = measure_path_size(expanded_path)
         result.size_bytes = size_bytes
         result.status = "found"
@@ -100,6 +140,7 @@ def _scan_path(path_rule, verbose: bool) -> PathScanResult:
         result.status = "error"
         result.notes.append(str(exc))
         return result
+
 
 def run_scan(
     rules: list[AppRule],

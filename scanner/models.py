@@ -11,6 +11,7 @@ class PathRule:
     accessible_path: str | None = None
     safe_to_clean_hint: str | None = None
     warning: str | None = None
+    mode: str | None = None
 
 
 @dataclass
