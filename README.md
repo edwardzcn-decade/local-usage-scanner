@@ -1,6 +1,6 @@
 # local-usage-scanner
 
-`local-usage-scanner` is a read-only macOS app storage scanner.
+`local-usage-scanner` is a read-only app storage scanner for macOS and Windows.
 It helps you find which desktop apps are using disk space in `caches`, `logs`, `local data` folders, and a few app-specific `media/download` locations.
 
 ## Safety
@@ -10,9 +10,14 @@ It helps you find which desktop apps are using disk space in `caches`, `logs`, `
 - No file moving.
 - BTW: Any `safe_to_clean_hint` is only a hint, not a guarantee.
 
+## Dependencies
+
+- No third-party Python packages are required.
+- The project runs with the Python standard library only.
+
 ## Run
 
-Use the bundled rules directory:
+Run with the bundled platform-default rules:
 
 ```bash
 python3 main.py
@@ -34,7 +39,6 @@ Verbose output:
 
 ```bash
 python3 main.py --verbose
-# More detai information
 ```
 
 Custom rules:
@@ -75,5 +79,6 @@ Each `path` in `paths` item supports:
 
 ## Current scope
 
-The default macOS rules focus on common desktop apps and conservative local storage locations.
-Some apps store downloads or catalog data in user-configurable folders; those may not be fully covered by the default rules.
+- macOS defaults to the enhanced macOS ruleset.
+- Windows defaults to the basic Windows ruleset with Feishu/Lark support.
+- Some apps store downloads or catalog data in user-configurable folders; those may not be fully covered by the default rules.

@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
+
+from scanner.models import MatchedEntry
 from scanner.utils import format_bytes
+
+
+FEISHU_HASH_DIR_PATTERN = re.compile(r"^[0-9a-f]{16,}$")
 
 
 def measure_path_size(path_str: str) -> tuple[int, list[str]]:
@@ -233,3 +239,76 @@ def measure_wechat_accounts_media(wx_files: str) -> tuple[int, list[str], int]:
         notes.append("No WeChat account media directories found under root.")
 
     return total_size, notes, matched_accounts
+
+
+def measure_feishu_aha_users(aha_users_root: str) -> tuple[int, list[str], list[MatchedEntry]]:
+    """
+    Scan Feishu aha/users and sum only hash-named directories.
+
+    Returns:
+        total_size_bytes, notes, matched_entries
+    """
+    notes: list[str] = []
+    matched_entries: list[MatchedEntry] = []
+    root_dir = Path(aha_users_root).expanduser()
+
+    try:
+        root_dir.lstat()
+    except PermissionError as exc:
+        raise PermissionError(f"Permission denied: {root_dir}") from exc
+    except OSError as exc:
+        raise OSError(f"Cannot stat path: {root_dir}: {exc}") from exc
+
+    if os.path.islink(root_dir):
+        notes.append("Skipped symlink target; symlinks are not followed.")
+        return 0, notes, matched_entries
+
+    if not root_dir.is_dir():
+        raise OSError(f"Feishu aha users root is not a directory: {root_dir}")
+
+    total_size = 0
+
+    try:
+        with os.scandir(root_dir) as entries:
+            for entry in entries:
+                entry_path = Path(entry.path)
+                try:
+                    if entry.is_symlink():
+                        notes.append(f"Skipped symlink directory: {entry_path}")
+                        continue
+                    if not entry.is_dir(follow_symlinks=False):
+                        continue
+                    if not FEISHU_HASH_DIR_PATTERN.fullmatch(entry.name):
+                        continue
+
+                    size_bytes, sub_notes = measure_path_size(str(entry_path))
+                    total_size += size_bytes
+                    matched_entries.append(
+                        MatchedEntry(
+                            label=entry.name,
+                            path=str(entry_path),
+                            size_bytes=size_bytes,
+                            warning="Delete candidate only; scanner remains read-only.",
+                        )
+                    )
+                    notes.append(
+                        f"Feishu aha user {entry.name} -> {format_bytes(size_bytes)}"
+                    )
+                    notes.extend(sub_notes)
+                except PermissionError:
+                    notes.append(f"Permission denied: {entry_path}")
+                except FileNotFoundError:
+                    notes.append(f"Path disappeared during scan: {entry_path}")
+                except OSError as exc:
+                    notes.append(f"Scan error at {entry_path}: {exc}")
+    except PermissionError as exc:
+        raise PermissionError(f"Permission denied: {root_dir}") from exc
+    except OSError as exc:
+        raise OSError(f"Cannot read directory: {root_dir}: {exc}") from exc
+
+    matched_entries.sort(key=lambda item: item.size_bytes, reverse=True)
+
+    if not matched_entries:
+        notes.append("No Feishu aha hash directories found under users root.")
+
+    return total_size, notes, matched_entries

@@ -1,11 +1,22 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 
 
-def expand_user_path(path_str: str) -> str:
-    return str(Path(path_str).expanduser())
+WINDOWS_ENV_VAR_PATTERN = re.compile(r"%([^%]+)%")
+
+
+def expand_user_path(path_str: str, env: dict[str, str] | None = None) -> str:
+    env_vars = env if env is not None else os.environ
+
+    def replace_var(match: re.Match[str]) -> str:
+        key = match.group(1)
+        return env_vars.get(key, match.group(0))
+
+    expanded = WINDOWS_ENV_VAR_PATTERN.sub(replace_var, path_str)
+    return str(Path(expanded).expanduser())
 
 
 def format_bytes(size_bytes: int) -> str:

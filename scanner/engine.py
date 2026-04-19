@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from scanner.filesystem import (
+    measure_feishu_aha_users,
     measure_path_size,
     measure_telegram_accounts_media,
     measure_wechat_accounts_media,
@@ -13,6 +14,7 @@ from scanner.utils import expand_user_path, unique_preserve_order
 
 TELEGRAM_ACCOUNTS_MEDIA_MODE = "telegram_accounts_media"
 WECHAT_ACCOUNTS_MEDIA_MODE = "wechat_accounts_media"
+FEISHU_AHA_USERS_MODE = "feishu_aha_users"
 
 
 def _selection_matches(value: str, rules: list[AppRule]) -> bool:
@@ -124,6 +126,22 @@ def _scan_path(path_rule: PathRule, verbose: bool) -> PathScanResult:
             result.status = "found"
             result.notes.append(
                 f"Matched {wx_matched_dirs} Wechat account directories."
+            )
+            return result
+        if path_rule.mode == FEISHU_AHA_USERS_MODE:
+            aha_size_bytes, notes, matched_entries = measure_feishu_aha_users(
+                expanded_path
+            )
+            if verbose:
+                result.notes.extend(notes)
+            if not matched_entries:
+                result.notes.append("No Feishu aha hash directories found.")
+                return result
+            result.size_bytes += aha_size_bytes
+            result.status = "found"
+            result.matched_entries.extend(matched_entries)
+            result.notes.append(
+                f"Matched {len(matched_entries)} Feishu aha hash directories."
             )
             return result
         size_bytes, notes = measure_path_size(expanded_path)

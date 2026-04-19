@@ -12,6 +12,15 @@ from scanner.platforms import detect_platform, normalize_platform
 from scanner.rules import load_rules
 
 
+def get_default_rules_path(platform_name: str) -> Path:
+    rules_dir = Path(__file__).resolve().parent / "rules"
+    if platform_name == "macos":
+        return rules_dir / "default_macos_apps_max.json"
+    if platform_name == "windows":
+        return rules_dir / "default_windows_apps.json"
+    return rules_dir / "default_linux_apps.json"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -59,7 +68,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.rules:
         rules_path = Path(args.rules).expanduser()
     else:
-        rules_path = Path(__file__).resolve().parent / "rules"
+        rules_path = get_default_rules_path(target_platform)
 
     rule_load = load_rules(rules_path)
     report = run_scan(

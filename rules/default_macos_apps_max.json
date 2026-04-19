@@ -165,29 +165,32 @@
       "id": "feishu",
       "name": "Feishu",
       "platforms": ["macos"],
-      "description": "Feishu local shell storage on macOS. Publicly documented paths are less granular than some other apps, so this rule stays conservative.",
+      "description": "Feishu local shell storage on macOS, focused on hash-named aha user directories that can grow large in practice.",
       "user_access_paths": [
         "~/Library/Application Support/LarkShell",
+        "~/Library/Application Support/LarkShell/aha/users",
         "~/Library/Application Support/LarkShell/sdk_storage"
       ],
       "warnings": [
-        "The LarkShell data directory can mix cache, logs, and live local state.",
-        "Prefer reviewing the log folder first; avoid deleting the whole LarkShell tree unless you are intentionally resetting Feishu."
+        "This tool remains read-only and will not delete Feishu data for you.",
+        "Hash-named directories under aha/users are shown as delete candidates based on your requested policy."
       ],
       "paths": [
+        {
+          "path": "~/Library/Application Support/LarkShell/aha/users",
+          "category": "delete-candidates",
+          "description": "Hash-named Feishu aha user directories. Each matched directory is listed separately and counted into the total.",
+          "accessible_path": "~/Library/Application Support/LarkShell/aha/users",
+          "safe_to_clean_hint": "These hash-named directories are treated as delete candidates in this workflow, but the scanner remains read-only.",
+          "warning": "Review the matched directories before manual cleanup.",
+          "mode": "feishu_aha_users"
+        },
         {
           "path": "~/Library/Application Support/LarkShell/sdk_storage/log",
           "category": "logs",
           "description": "Feishu diagnostic logs under sdk_storage.",
           "accessible_path": "~/Library/Application Support/LarkShell/sdk_storage",
           "safe_to_clean_hint": "Logs are usually safer to review and prune than the full data directory."
-        },
-        {
-          "path": "~/Library/Application Support/LarkShell/sdk_storage",
-          "category": "local-data",
-          "description": "Main Feishu local storage directory documented in reset guides.",
-          "accessible_path": "~/Library/Application Support/LarkShell",
-          "warning": "This may include active local state, downloaded content, and cache. Do not delete by default."
         }
       ]
     },

@@ -1,0 +1,54 @@
+{
+  "apps": [
+    {
+      "id": "feishu",
+      "name": "Feishu",
+      "platforms": ["windows"],
+      "description": "Feishu local shell storage on Windows, focused on hash-named aha user directories.",
+      "user_access_paths": [
+        "%APPDATA%/LarkShell/aha/users",
+        "%APPDATA%/Feishu/aha/users",
+        "%APPDATA%/LarkShell/sdk_storage/log",
+        "%APPDATA%/Feishu/sdk_storage/log"
+      ],
+      "warnings": [
+        "This tool remains read-only and will not delete Feishu data for you.",
+        "Hash-named directories under aha/users are shown as delete candidates based on your requested policy."
+      ],
+      "paths": [
+        {
+          "path": "%APPDATA%/LarkShell/aha/users",
+          "category": "delete-candidates",
+          "description": "Hash-named Feishu aha user directories under LarkShell.",
+          "accessible_path": "%APPDATA%/LarkShell/aha/users",
+          "safe_to_clean_hint": "These hash-named directories are treated as delete candidates in this workflow, but the scanner remains read-only.",
+          "warning": "Review the matched directories before manual cleanup.",
+          "mode": "feishu_aha_users"
+        },
+        {
+          "path": "%APPDATA%/Feishu/aha/users",
+          "category": "delete-candidates",
+          "description": "Hash-named Feishu aha user directories under Feishu.",
+          "accessible_path": "%APPDATA%/Feishu/aha/users",
+          "safe_to_clean_hint": "These hash-named directories are treated as delete candidates in this workflow, but the scanner remains read-only.",
+          "warning": "Review the matched directories before manual cleanup.",
+          "mode": "feishu_aha_users"
+        },
+        {
+          "path": "%APPDATA%/LarkShell/sdk_storage/log",
+          "category": "logs",
+          "description": "Feishu diagnostic logs under LarkShell.",
+          "accessible_path": "%APPDATA%/LarkShell/sdk_storage/log",
+          "safe_to_clean_hint": "Logs are usually safer to review and prune than the full data directory."
+        },
+        {
+          "path": "%APPDATA%/Feishu/sdk_storage/log",
+          "category": "logs",
+          "description": "Feishu diagnostic logs under Feishu.",
+          "accessible_path": "%APPDATA%/Feishu/sdk_storage/log",
+          "safe_to_clean_hint": "Logs are usually safer to review and prune than the full data directory."
+        }
+      ]
+    }
+  ]
+}

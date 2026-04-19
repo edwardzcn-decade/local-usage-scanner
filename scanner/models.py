@@ -4,6 +4,14 @@ from dataclasses import asdict, dataclass, field
 
 
 @dataclass
+class MatchedEntry:
+    label: str
+    path: str
+    size_bytes: int
+    warning: str | None = None
+
+
+@dataclass
 class PathRule:
     path: str
     category: str
@@ -36,6 +44,7 @@ class PathScanResult:
     accessible_path: str | None = None
     safe_to_clean_hint: str | None = None
     warning: str | None = None
+    matched_entries: list[MatchedEntry] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
 
