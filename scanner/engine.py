@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Callable
 
 from scanner.filesystem import (
     measure_feishu_aha_users,
@@ -167,6 +168,7 @@ def run_scan(
     verbose: bool,
     rules_source: str,
     detected_platform: str,
+    on_app_start: Callable[[str, int, int], None] | None = None,
 ) -> ScanReport:
     normalized_selection = {
         item.strip().lower() for item in selected_apps if item.strip()
@@ -191,7 +193,10 @@ def run_scan(
     for item in unmatched_selection:
         global_notes.append(f"Requested app not found in rules: {item}")
 
-    for rule in filter_rules:
+    total_rules = len(filter_rules)
+    for index, rule in enumerate(filter_rules, start=1):
+        if on_app_start is not None:
+            on_app_start(rule.app_name, index, total_rules)
         res = _scan_app(rule, platform_name=platform_name, verbose=verbose)
         app_results.append(res)
 

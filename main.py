@@ -52,7 +52,26 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show additional scan notes and non-fatal errors",
     )
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="Disable ANSI colors in text output",
+    )
+    parser.add_argument(
+        "--progress",
+        action="store_true",
+        help="Show lightweight scan progress in text output",
+    )
+    parser.add_argument(
+        "--compact",
+        action="store_true",
+        help="Reduce text output density to key results only",
+    )
     return parser
+
+
+def _print_progress(app_name: str, index: int, total: int) -> None:
+    print(f"[SCAN] {index}/{total} {app_name}", file=sys.stderr)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -78,6 +97,7 @@ def main(argv: list[str] | None = None) -> int:
         verbose=args.verbose,
         rules_source=str(rules_path),
         detected_platform=detected_platform,
+        on_app_start=_print_progress if args.progress and args.format == "text" else None,
     )
     report.global_notes = rule_load.notes + report.global_notes
     report.rules_loaded = len(rule_load.rules)
@@ -87,7 +107,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.format == "json":
         print(format_scan_json(report))
     else:
-        print(format_scan_text(report, verbose=args.verbose))
+        print(
+            format_scan_text(
+                report,
+                verbose=args.verbose,
+                use_color=False if args.no_color else None,
+                compact=args.compact,
+            )
+        )
 
     return 0
 
